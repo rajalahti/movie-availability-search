@@ -1,0 +1,21 @@
+{
+  "name": "movie-finder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@langchain/openai": "^0.2.2",
+    "axios": "^1.7.2",
+    "langchain": "^0.2.10",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "serverless-dotenv-plugin": "^6.0.0"
+  }
+}

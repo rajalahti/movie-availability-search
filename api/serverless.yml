@@ -1,0 +1,48 @@
+service: movie-finder
+
+provider:
+  name: aws
+  region: eu-north-1
+  runtime: nodejs20.x
+
+  apiGateway:
+      apiKeys:
+        - free:
+            - movie-finder-api-key
+      usagePlan:
+        - free:
+            quota:
+              limit: 5000
+              offset: 1
+              period: MONTH
+            throttle:
+              burstLimit: 10
+              rateLimit: 15
+
+functions:
+  searchMovie:
+    handler: handler.searchMovie
+    memorySize: 256
+    timeout: 30
+    description: Search movie availability across multiple countries
+    events:
+      - http:
+          path: search
+          method: get
+          cors: true
+          private: true
+
+  getSimilarMovies:
+    handler: handler.getSimilarMovies
+    memorySize: 256
+    timeout: 30
+    description: Get similar movies using GPT-4o model
+    events:
+      - http:
+          path: similar
+          method: get
+          cors: true
+          private: true
+
+plugins:
+  - serverless-dotenv-plugin
