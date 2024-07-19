@@ -362,12 +362,12 @@ const parser = StructuredOutputParser.fromZodSchema(
 const systemPrompt = new PromptTemplate({
   inputVariables: ["title"],
   template:
-    "You are an AI that provides recommendations for similar movies. The user will provide a movie title and you will respond with 4 similar movies including the title, year of release, and a short description.",
+    "You are an AI that provides recommendations for similar movies. The user will provide a movie title and you will respond with a list similar movies including the title, year of release, and a short description.",
 });
 
 const similarMoviesPrompt = new PromptTemplate({
   inputVariables: ["title", "format_instructions"],
-  template: `User: Give me 4 movies similar to "{title}".
+  template: `User: Give me 10 movies similar to "{title}".
 
   {format_instructions}
   `,
@@ -375,8 +375,8 @@ const similarMoviesPrompt = new PromptTemplate({
 
 exports.getSimilarMovies = async (event) => {
   const model = new ChatOpenAI({
-    temperature: 0.9,
-    modelName: process.env.MODEL_OPUS,
+    temperature: 0.5,
+    modelName: process.env.MODEL_GPT4O_MINI,
     maxTokens: 4000,
     openaiApiKey: process.env.OPENAI_API_KEY,
   });
