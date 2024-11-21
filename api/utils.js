@@ -1,8 +1,6 @@
 const { PROVIDERS } = require("./constants");
 
-const filterProviders = (offers) => {
-  return offers.filter((offer) => PROVIDERS.includes(offer.package.clearName));
-};
+// Removed filterProviders function
 
 const limitConcurrentRequests = async (tasks, limit) => {
   const results = [];
@@ -26,6 +24,5 @@ const limitConcurrentRequests = async (tasks, limit) => {
 };
 
 module.exports = {
-  filterProviders,
   limitConcurrentRequests,
 };

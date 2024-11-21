@@ -21,6 +21,8 @@ const searchMovieInCountry = async (title, country) => {
 
 exports.searchMovie = async (event) => {
   const title = event.queryStringParameters.title;
+  const providersParam = event.queryStringParameters.providers;
+  const userProviders = providersParam ? providersParam.split(',') : [];
   const foundResults = [];
   const notFoundCountries = [];
 
@@ -33,7 +35,9 @@ exports.searchMovie = async (event) => {
     }
 
     const movie = movies[0].node;
-    const offers = filterProviders(movie.offers || []);
+    const offers = (movie.offers || []).filter((offer) =>
+      userProviders.includes(offer.package.clearName)
+    );
 
     if (offers.length === 0) {
       notFoundCountries.push(COUNTRY_NAMES[country]);
