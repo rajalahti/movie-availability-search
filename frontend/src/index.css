@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+body {
+  background-color: #111827;
+  color: white;
+  min-height: 100vh;
+}
+
+/* Amplify UI overrides for dark theme */
+[data-amplify-authenticator] {
+  --amplify-colors-background-primary: #1f2937;
+  --amplify-colors-background-secondary: #111827;
+  --amplify-colors-brand-primary-10: #fef2f2;
+  --amplify-colors-brand-primary-80: #e50914;
+  --amplify-colors-brand-primary-90: #b91c1c;
+  --amplify-colors-brand-primary-100: #991b1b;
+  --amplify-colors-font-primary: #f9fafb;
+  --amplify-colors-font-secondary: #d1d5db;
+}

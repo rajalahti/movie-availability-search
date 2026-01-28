@@ -1,18 +1,89 @@
-#Movie availability search
+# Movie Availability Search
 
 https://movies.rajalahti.me
 
-##Main Functionalities
+Search for movies across multiple streaming services and countries at once. Perfect for finding where a title is available when using a VPN service.
 
-This is a basic react app with a backend build with AWS Lambda. It uses the JustWatch GraphQL-API to search for movies from multiple streaming services and all locations found in JustWatch and NordVPN at once. 
+## Features
 
-This makes finding a title and watching it with a VPN service easy.
+- 🔍 Search movies across 44 countries simultaneously
+- 📺 Filter by streaming providers (Netflix, Disney+, HBO Max, etc.)
+- 🤖 AI-powered similar movie recommendations (GPT-4o)
+- 🌍 See which country has your movie available
+- 🎬 Movie details: poster, description, genres, runtime
 
-##Backend
+## Project Structure
 
-- Uses AWS Llambda with nodeJS and deployment with serverless framework
-- Sets up two api routes, one for searching for movies with a title and one for getting similar recommendations with OpenAI's GPT4o-API
+```
+├── api/           # AWS Lambda backend (Serverless)
+│   ├── handler.js
+│   ├── searchMovie.js
+│   ├── getSimilarMovies.js
+│   └── serverless.yml
+│
+└── frontend/      # React + Vite + TypeScript + Tailwind
+    ├── src/
+    │   ├── App.tsx
+    │   ├── components/
+    │   └── types/
+    └── package.json
+```
 
-##Frontend
+## Backend (API)
 
-- Simple React app setup with Create-react-app
+AWS Lambda functions deployed with Serverless Framework.
+
+### Endpoints
+
+- `GET /search?title=<title>&providers=<providers>` - Search movie availability
+- `GET /similar?title=<title>` - Get AI recommendations
+
+### Deploy
+
+```bash
+cd api
+npm install
+serverless deploy
+```
+
+## Frontend
+
+Modern React app with Vite, TypeScript, and Tailwind CSS.
+
+### Development
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Build
+
+```bash
+npm run build
+```
+
+### Environment
+
+Create `frontend/.env`:
+```
+VITE_API_URL=https://your-api-gateway-url
+VITE_API_KEY=your-api-key
+```
+
+## Tech Stack
+
+**Backend:**
+- Node.js 20.x
+- AWS Lambda
+- Serverless Framework
+- JustWatch GraphQL API
+- OpenAI GPT-4o
+
+**Frontend:**
+- React 18
+- TypeScript
+- Vite
+- Tailwind CSS
+- Lucide React (icons)
