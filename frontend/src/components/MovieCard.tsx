@@ -1,20 +1,11 @@
 import { Bookmark, BookmarkCheck, Clock, Calendar, ExternalLink } from 'lucide-react';
-import { MovieResult } from '../services/movieApi';
+import { MovieResult, getCountryFlag, getCountryName } from '../services/movieApi';
 
 interface Props {
   movie: MovieResult;
   isInWatchlist: boolean;
   onToggleWatchlist: () => void;
   isAuthenticated: boolean;
-}
-
-// Helper: country code to flag emoji
-function countryToFlag(code: string): string {
-  const codePoints = code
-    .toUpperCase()
-    .split('')
-    .map((char) => 127397 + char.charCodeAt(0));
-  return String.fromCodePoint(...codePoints);
 }
 
 export function MovieCard({ movie, isInWatchlist, onToggleWatchlist, isAuthenticated }: Props) {
@@ -46,11 +37,14 @@ export function MovieCard({ movie, isInWatchlist, onToggleWatchlist, isAuthentic
             </div>
           </div>
 
-          {/* Country flag + Watchlist */}
+          {/* Country flag + name + Watchlist */}
           <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="text-2xl" title={movie.countryName}>
-              {countryToFlag(movie.country)}
-            </span>
+            <div className="flex items-center gap-1 bg-gray-700/50 px-2 py-1 rounded" title={getCountryName(movie.country)}>
+              <span className="text-xl">{getCountryFlag(movie.country)}</span>
+              {/* Show country code on mobile, full name on desktop */}
+              <span className="text-sm text-gray-300 md:hidden">{movie.country}</span>
+              <span className="text-sm text-gray-300 hidden md:inline">{getCountryName(movie.country)}</span>
+            </div>
             {isAuthenticated && (
               <button
                 onClick={onToggleWatchlist}
