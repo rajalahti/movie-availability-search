@@ -64,6 +64,8 @@ functions:
     package:
       patterns:
         - "!getSimilarMovies.js"
+        - "!getDescription.js"
+        - "!omdb.js"
         - "!node_modules/openai/**"
         - "!node_modules/zod/**"
     events:
@@ -95,6 +97,31 @@ functions:
     events:
       - http:
           path: similar
+          method: get
+          cors: true
+          private: true
+
+  getDescription:
+    handler: getDescription.getDescription
+    memorySize: 128
+    timeout: 15
+    description: Get an exact full movie description from OMDb on demand
+    environment:
+      OMDB_API_KEY: ${env:OMDB_API_KEY}
+      OMDB_TIMEOUT_MS: ${env:OMDB_TIMEOUT_MS, '8000'}
+      DESCRIPTION_CACHE_TTL_MS: ${env:DESCRIPTION_CACHE_TTL_MS, '604800000'}
+    package:
+      patterns:
+        - "!searchMovie.js"
+        - "!graphql.js"
+        - "!constants.js"
+        - "!utils.js"
+        - "!getSimilarMovies.js"
+        - "!node_modules/openai/**"
+        - "!node_modules/zod/**"
+    events:
+      - http:
+          path: description
           method: get
           cors: true
           private: true

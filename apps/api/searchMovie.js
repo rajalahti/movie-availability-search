@@ -84,6 +84,7 @@ const loadCountrySearchResults = async (title) => {
 const buildSearchResponse = (countryResults, selectedProviders) => {
   const providerSet = new Set(selectedProviders);
   const foundResults = [];
+  const moviesById = new Map();
   const notFoundCountries = [];
 
   countryResults.forEach(({ country, edges }) => {
@@ -102,15 +103,20 @@ const buildSearchResponse = (countryResults, selectedProviders) => {
       return;
     }
 
+    const movieId = movie.id || `${movie.objectType || "TITLE"}:${movie.content.title}:${movie.content.originalReleaseYear}`;
+    const genres = movie.content.genres.map(
+      (genre) => GENRE_MAP[genre.shortName] || genre.shortName
+    );
+
     const result = {
+      movieId,
+      objectType: movie.objectType,
       country: COUNTRY_NAMES[country],
       countryCode: country,
       foundTitle: movie.content.title,
       year: movie.content.originalReleaseYear,
       shortDescription: movie.content.shortDescription,
-      genres: movie.content.genres.map(
-        (genre) => GENRE_MAP[genre.shortName] || genre.shortName
-      ),
+      genres,
       runtime: movie.content.runtime,
       posterUrl: movie.content.posterUrl,
       offers: [],
@@ -128,9 +134,35 @@ const buildSearchResponse = (countryResults, selectedProviders) => {
     });
 
     foundResults.push(result);
+
+    if (!moviesById.has(movieId)) {
+      moviesById.set(movieId, {
+        id: movieId,
+        objectType: movie.objectType,
+        title: movie.content.title,
+        year: movie.content.originalReleaseYear,
+        description: movie.content.shortDescription,
+        genres,
+        runtime: movie.content.runtime,
+        posterUrl: movie.content.posterUrl,
+        countries: [],
+      });
+    }
+
+    moviesById.get(movieId).countries.push({
+      country: COUNTRY_NAMES[country],
+      countryCode: country,
+      offers: result.offers,
+    });
   });
 
   return {
+    movies: Array.from(moviesById.values()).sort(
+      (left, right) =>
+        right.countries.length - left.countries.length ||
+        left.title.localeCompare(right.title) ||
+        left.year - right.year
+    ),
     foundResults,
     notFoundCountries,
   };
@@ -152,7 +184,7 @@ exports.searchMovie = async (event) => {
     `search:${normalizeTitle(title)}`,
     () => loadCountrySearchResults(title)
   );
-  const { foundResults, notFoundCountries } = buildSearchResponse(
+  const { movies, foundResults, notFoundCountries } = buildSearchResponse(
     countryResults,
     userProviders
   );
@@ -167,9 +199,13 @@ exports.searchMovie = async (event) => {
     statusCode: 200,
     headers: headers,
     body: JSON.stringify({
+      movies,
+      // Keep the flat response during the frontend migration.
       found: foundResults,
       notFoundIn: notFoundCountries,
       not_found: notFoundCountries,
     }),
   };
 };
+
+exports.buildSearchResponse = buildSearchResponse;

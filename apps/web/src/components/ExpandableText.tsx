@@ -1,10 +1,12 @@
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useState, type CSSProperties } from 'react';
 
 interface Props {
   text?: string;
   collapsedLines?: number;
   className?: string;
   toggleThreshold?: number;
+  moreLabel?: string;
+  lessLabel?: string;
 }
 
 export function ExpandableText({
@@ -12,12 +14,10 @@ export function ExpandableText({
   collapsedLines = 2,
   className = '',
   toggleThreshold = 120,
+  moreLabel = 'Show more',
+  lessLabel = 'Show less',
 }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
-
-  useEffect(() => {
-    setIsExpanded(false);
-  }, [text]);
 
   if (!text) {
     return null;
@@ -43,9 +43,10 @@ export function ExpandableText({
         <button
           type="button"
           onClick={() => setIsExpanded((value) => !value)}
-          className="mt-1 text-xs font-medium text-primary hover:text-red-400 transition-colors"
+          className="expandable-text__toggle"
+          aria-expanded={isExpanded}
         >
-          {isExpanded ? 'Show less' : 'Show more'}
+          {isExpanded ? lessLabel : moreLabel}
         </button>
       )}
     </div>

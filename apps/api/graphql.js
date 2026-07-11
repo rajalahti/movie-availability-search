@@ -17,6 +17,8 @@ const sleep = (milliseconds) =>
   new Promise((resolve) => setTimeout(resolve, milliseconds));
 
 const buildTitleSelection = (countryVariable) => `
+  id
+  objectType
   content(country: ${countryVariable}, language: $language) {
     title
     originalReleaseYear

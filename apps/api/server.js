@@ -5,6 +5,7 @@ const express = require("express");
 
 const { searchMovie } = require("./searchMovie");
 const { getSimilarMovies } = require("./getSimilarMovies");
+const { getDescription } = require("./getDescription");
 
 const app = express();
 const port = Number(process.env.PORT || 3001);
@@ -61,6 +62,10 @@ app.get("/search", (req, res) => {
 
 app.get("/similar", (req, res) => {
   void sendLambdaStyleResponse(getSimilarMovies, req, res);
+});
+
+app.get("/description", (req, res) => {
+  void sendLambdaStyleResponse(getDescription, req, res);
 });
 
 app.listen(port, () => {

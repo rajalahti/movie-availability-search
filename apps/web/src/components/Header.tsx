@@ -1,4 +1,5 @@
-import { Film, Bookmark, LogOut, LogIn } from 'lucide-react';
+import { Bookmark, Film, LogOut } from 'lucide-react';
+import { SearchBar } from './SearchBar';
 
 interface Props {
   isAuthenticated: boolean;
@@ -7,6 +8,9 @@ interface Props {
   onSignOut: () => void;
   onWatchlistClick: () => void;
   showWatchlist: boolean;
+  onSearch: (query: string) => void;
+  searchQuery: string;
+  isLoading: boolean;
 }
 
 export function Header({
@@ -16,50 +20,60 @@ export function Header({
   onSignOut,
   onWatchlistClick,
   showWatchlist,
+  onSearch,
+  searchQuery,
+  isLoading,
 }: Props) {
   return (
-    <header className="bg-gray-800 border-b border-gray-700">
-      <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.reload()}>
-          <Film className="text-primary" size={28} />
-          <h1 className="text-xl font-bold hidden sm:block">Movie Search</h1>
-        </div>
+    <header className="app-header">
+      <div className="app-header__inner">
+        <button
+          type="button"
+          className="brand-button"
+          onClick={() => window.location.reload()}
+          aria-label="Movie Availability home"
+        >
+          <Film size={28} aria-hidden="true" />
+        </button>
 
-        <div className="flex items-center gap-4">
-          {isAuthenticated ? (
-            <>
-              <button
-                onClick={onWatchlistClick}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors
-                  ${showWatchlist ? 'bg-primary text-white' : 'hover:bg-gray-700'}`}
-              >
-                <Bookmark size={20} />
-                <span className="hidden sm:inline">Watchlist</span>
-              </button>
-              
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-400 hidden md:block">
-                  {userEmail}
-                </span>
-                <button
-                  onClick={onSignOut}
-                  className="flex items-center gap-2 px-3 py-2 hover:bg-gray-700 rounded-lg transition-colors"
-                  title="Sign out"
-                >
-                  <LogOut size={20} />
-                </button>
-              </div>
-            </>
-          ) : (
+        <SearchBar
+          onSearch={onSearch}
+          value={searchQuery}
+          isLoading={isLoading}
+        />
+
+        {isAuthenticated ? (
+          <div className="account-actions">
             <button
-              onClick={onSignIn}
-              className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-red-700 rounded-lg transition-colors"
+              type="button"
+              onClick={onWatchlistClick}
+              className={`icon-button ${showWatchlist ? 'icon-button--active' : ''}`}
+              aria-label={showWatchlist ? 'Close watchlist' : 'Open watchlist'}
+              aria-pressed={showWatchlist}
             >
-              <LogIn size={20} />
-              <span>Sign In</span>
+              <Bookmark size={24} aria-hidden="true" />
             </button>
-          )}
-        </div>
+            <button
+              type="button"
+              onClick={onSignOut}
+              className="icon-button account-actions__sign-out"
+              title={userEmail ? `Sign out ${userEmail}` : 'Sign out'}
+              aria-label="Sign out"
+            >
+              <LogOut size={21} aria-hidden="true" />
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={onSignIn}
+            className="icon-button"
+            aria-label="Sign in to open watchlist"
+            title="Sign in to open watchlist"
+          >
+            <Bookmark size={24} aria-hidden="true" />
+          </button>
+        )}
       </div>
     </header>
   );

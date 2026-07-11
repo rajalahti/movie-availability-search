@@ -42,6 +42,15 @@ Frontend runs on `http://localhost:5173` and the local API runs on `http://local
 - `JUSTWATCH_MAX_RETRIES`: retries for transient JustWatch failures
 - `OPENAI_MAX_TOKENS`: output token cap for similar-movie recommendations
 - `OPENAI_TIMEOUT_MS`: timeout for the OpenAI request
+- `OMDB_API_KEY`: OMDb API key used only for on-demand full descriptions
+- `OMDB_TIMEOUT_MS`: timeout for an OMDb request
+- `DESCRIPTION_CACHE_TTL_MS`: cache lifetime for verified full descriptions
+
+The frontend requests `GET /description?title={title}&year={year}` only after
+the user opens a full description. The backend accepts an OMDb result only when
+its normalized title, release year, and `movie` type exactly match the selected
+JustWatch movie. The short JustWatch summary remains the fallback when no exact
+full plot is available.
 
 ## Scripts
 
