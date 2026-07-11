@@ -1,7 +1,3 @@
-const { PROVIDERS } = require("./constants");
-
-// Removed filterProviders function
-
 const limitConcurrentRequests = async (tasks, limit) => {
   const results = [];
   const executing = [];

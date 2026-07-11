@@ -1,0 +1,22 @@
+{
+  "name": "movie-availability-scan",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c cyan,magenta \"npm run dev -w @movie-availability-scan/api\" \"npm run dev -w @movie-availability-scan/web\"",
+    "dev:api": "npm run dev -w @movie-availability-scan/api",
+    "dev:web": "npm run dev -w @movie-availability-scan/web",
+    "build": "npm run build -w @movie-availability-scan/web",
+    "build:web": "npm run build -w @movie-availability-scan/web",
+    "start:api": "npm run start -w @movie-availability-scan/api",
+    "test:api": "npm test -w @movie-availability-scan/api",
+    "package:api": "npm run package -w @movie-availability-scan/api",
+    "deploy:api": "npm run deploy -w @movie-availability-scan/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

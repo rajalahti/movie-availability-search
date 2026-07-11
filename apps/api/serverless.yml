@@ -1,0 +1,100 @@
+service: movie-finder
+frameworkVersion: "3"
+useDotenv: true
+
+plugins:
+  - serverless-esbuild
+
+custom:
+  esbuild:
+    bundle: true
+    minify: true
+    sourcemap: false
+    platform: node
+    target: node20
+    concurrency: 2
+
+package:
+  individually: true
+  patterns:
+    - "!.env"
+    - "!.env.*"
+    - "!**/.env"
+    - "!**/.env.*"
+    - "!server.js"
+    - "!handler.js"
+    - "!test/**"
+    - "!node_modules/express/**"
+    - "!node_modules/cors/**"
+    - "!node_modules/dotenv/**"
+
+provider:
+  name: aws
+  region: eu-north-1
+  runtime: nodejs20.x
+
+  apiGateway:
+      apiKeys:
+        - free:
+            - movie-finder-api-key
+      usagePlan:
+        - free:
+            quota:
+              limit: 5000
+              offset: 1
+              period: MONTH
+            throttle:
+              burstLimit: 10
+              rateLimit: 15
+
+functions:
+  searchMovie:
+    handler: searchMovie.searchMovie
+    memorySize: 256
+    timeout: 30
+    description: Search movie availability across multiple countries
+    environment:
+      SEARCH_CACHE_TTL_MS: ${env:SEARCH_CACHE_TTL_MS, '600000'}
+      SEARCH_BATCH_SIZE: ${env:SEARCH_BATCH_SIZE, '8'}
+      SEARCH_BATCH_CONCURRENCY: ${env:SEARCH_BATCH_CONCURRENCY, '3'}
+      SEARCH_FALLBACK_CONCURRENCY: ${env:SEARCH_FALLBACK_CONCURRENCY, '2'}
+      JUSTWATCH_TIMEOUT_MS: ${env:JUSTWATCH_TIMEOUT_MS, '8000'}
+      JUSTWATCH_MAX_RETRIES: ${env:JUSTWATCH_MAX_RETRIES, '2'}
+      JUSTWATCH_RETRY_BASE_MS: ${env:JUSTWATCH_RETRY_BASE_MS, '250'}
+    package:
+      patterns:
+        - "!getSimilarMovies.js"
+        - "!node_modules/openai/**"
+        - "!node_modules/zod/**"
+    events:
+      - http:
+          path: search
+          method: get
+          cors: true
+          private: true
+
+  getSimilarMovies:
+    handler: getSimilarMovies.getSimilarMovies
+    memorySize: 256
+    timeout: 30
+    description: Get similar movies using GPT-4o model
+    environment:
+      OPENAI_API_KEY: ${env:OPENAI_API_KEY}
+      MODEL_GPT4O_MINI: ${env:MODEL_GPT4O_MINI, 'gpt-4o-mini'}
+      OPENAI_MAX_TOKENS: ${env:OPENAI_MAX_TOKENS, '1200'}
+      OPENAI_TIMEOUT_MS: ${env:OPENAI_TIMEOUT_MS, '20000'}
+      OPENAI_MAX_RETRIES: ${env:OPENAI_MAX_RETRIES, '1'}
+    package:
+      patterns:
+        - "!searchMovie.js"
+        - "!graphql.js"
+        - "!constants.js"
+        - "!cache.js"
+        - "!utils.js"
+        - "!node_modules/axios/**"
+    events:
+      - http:
+          path: similar
+          method: get
+          cors: true
+          private: true

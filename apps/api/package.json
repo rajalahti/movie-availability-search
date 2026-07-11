@@ -1,0 +1,29 @@
+{
+  "name": "@movie-availability-scan/api",
+  "version": "1.0.0",
+  "description": "API for movie availability search",
+  "main": "handler.js",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js",
+    "test": "node --test",
+    "package": "serverless package",
+    "deploy": "serverless deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.18.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "openai": "^4.104.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1",
+    "serverless": "^3.40.0",
+    "serverless-esbuild": "^1.57.2"
+  }
+}
