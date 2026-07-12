@@ -138,9 +138,9 @@ test("full description resolves an exact search result by IMDb id when direct lo
   }
 });
 
-test("similar search degrades gracefully without an OpenAI key", async () => {
-  const originalApiKey = process.env.OPENAI_API_KEY;
-  delete process.env.OPENAI_API_KEY;
+test("similar search degrades gracefully without an OpenRouter key", async () => {
+  const originalApiKey = process.env.OPENROUTER_API_KEY;
+  delete process.env.OPENROUTER_API_KEY;
 
   try {
     const response = await getSimilarMovies({
@@ -151,9 +151,9 @@ test("similar search degrades gracefully without an OpenAI key", async () => {
     assert.deepEqual(JSON.parse(response.body), []);
   } finally {
     if (originalApiKey === undefined) {
-      delete process.env.OPENAI_API_KEY;
+      delete process.env.OPENROUTER_API_KEY;
     } else {
-      process.env.OPENAI_API_KEY = originalApiKey;
+      process.env.OPENROUTER_API_KEY = originalApiKey;
     }
   }
 });

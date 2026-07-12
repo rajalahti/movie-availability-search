@@ -40,8 +40,10 @@ Frontend runs on `http://localhost:5173` and the local API runs on `http://local
 - `SEARCH_FALLBACK_CONCURRENCY`: single-country concurrency if batching fails
 - `JUSTWATCH_TIMEOUT_MS`: timeout for an individual JustWatch request
 - `JUSTWATCH_MAX_RETRIES`: retries for transient JustWatch failures
-- `OPENAI_MAX_TOKENS`: output token cap for similar-movie recommendations
-- `OPENAI_TIMEOUT_MS`: timeout for the OpenAI request
+- `OPENROUTER_API_KEY`: OpenRouter API key for similar-movie recommendations
+- `OPENROUTER_MODEL`: recommendation model (defaults to Gemini 2.5 Flash Lite)
+- `OPENROUTER_MAX_TOKENS`: output token cap for similar-movie recommendations
+- `OPENROUTER_TIMEOUT_MS`: timeout for the OpenRouter request
 - `OMDB_API_KEY`: OMDb API key used only for on-demand full descriptions
 - `OMDB_TIMEOUT_MS`: timeout for an OMDb request
 - `DESCRIPTION_CACHE_TTL_MS`: cache lifetime for verified full descriptions
@@ -64,8 +66,8 @@ full plot is available.
 
 The Lambda functions are bundled separately. The search package contains only
 the JustWatch search implementation, while the recommendation package contains
-the OpenAI implementation. `.env` files are explicitly excluded from both
-artifacts. Packaging and deployment require `OPENAI_API_KEY` to be available in
+the OpenRouter implementation. `.env` files are explicitly excluded from both
+artifacts. Packaging and deployment require `OPENROUTER_API_KEY` to be available in
 the shell or in `apps/api/.env`.
 
 ## Production Migration
@@ -88,6 +90,6 @@ Safest rollout:
 
 Important notes:
 
-- `OPENAI_API_KEY` belongs only in the backend/Lambda environment.
+- `OPENROUTER_API_KEY` belongs only in the backend/Lambda environment.
 - `VITE_API_KEY` is a frontend-exposed API Gateway key, so treat it as a quota gate, not a secret.
 - If you create a brand new identity pool or DynamoDB table, existing watchlists will no longer line up automatically.
