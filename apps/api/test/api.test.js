@@ -219,6 +219,49 @@ test("search results group regional matches by stable JustWatch movie id", () =>
   );
 });
 
+test("Max provider selection matches JustWatch's HBO Max provider name", () => {
+  const countryResults = [
+    {
+      country: "FI",
+      edges: [{
+        node: {
+          id: "ts2",
+          objectType: "SHOW",
+          content: {
+            title: "Game of Thrones",
+            originalReleaseYear: 2011,
+            shortDescription: "Nine noble families fight for control.",
+            genres: [{ shortName: "drm" }],
+            runtime: 58,
+            posterUrl: "/poster.jpg",
+          },
+          offers: [
+            {
+              package: { clearName: "HBO Max" },
+              standardWebURL: "https://max.example/game-of-thrones",
+            },
+            {
+              package: { clearName: "HBO Max Amazon Channel" },
+              standardWebURL: "https://amazon.example/game-of-thrones",
+            },
+          ],
+        },
+      }],
+    },
+  ];
+
+  const result = buildSearchResponse(countryResults, ["Max"]);
+
+  assert.equal(result.movies.length, 1);
+  assert.deepEqual(result.movies[0].countries[0].offers, [
+    {
+      provider: "HBO Max",
+      url: "https://max.example/game-of-thrones",
+    },
+  ]);
+  assert.deepEqual(result.notFoundCountries, []);
+});
+
 test("JustWatch requests retry transient failures", async () => {
   const originalPost = axios.post;
   const originalRetries = process.env.JUSTWATCH_MAX_RETRIES;

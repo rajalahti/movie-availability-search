@@ -54,6 +54,17 @@ const chunk = (items, size) => {
 
 const normalizeTitle = (title) => title.trim().toLowerCase();
 
+const normalizeProviderName = (provider) => {
+  const normalized = String(provider || "").trim().toLowerCase();
+
+  // JustWatch uses the former HBO Max brand name while the app calls it Max.
+  if (normalized === "hbo max") {
+    return "max";
+  }
+
+  return normalized;
+};
+
 const loadCountrySearchResults = async (title) => {
   const countryBatches = chunk(COUNTRIES, getBatchSize());
   const tasks = countryBatches.map((countryBatch) => async () => {
@@ -82,7 +93,7 @@ const loadCountrySearchResults = async (title) => {
 };
 
 const buildSearchResponse = (countryResults, selectedProviders) => {
-  const providerSet = new Set(selectedProviders);
+  const providerSet = new Set(selectedProviders.map(normalizeProviderName));
   const foundResults = [];
   const moviesById = new Map();
   const notFoundCountries = [];
@@ -95,7 +106,9 @@ const buildSearchResponse = (countryResults, selectedProviders) => {
 
     const movie = edges[0].node;
     const offers = (movie.offers || []).filter(
-      (offer) => providerSet.size === 0 || providerSet.has(offer.package.clearName)
+      (offer) =>
+        providerSet.size === 0 ||
+        providerSet.has(normalizeProviderName(offer.package.clearName))
     );
 
     if (offers.length === 0) {
